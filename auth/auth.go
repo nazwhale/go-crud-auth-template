@@ -8,27 +8,19 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-// Man in the middle attacks to consider:
-// CSRF
-// XSS
-
 var jwtKey = []byte("my_secret_key")
 
 const cookieNameToken = "token"
 const cookieExpiration = 5 * time.Minute
 
-// Create a struct that will be encoded to a JWT.
-// We add jwt.StandardClaims as an embedded type, to provide fields like expiry time
 type Claims struct {
 	Email string `json:"email"`
 	jwt.StandardClaims
 }
 
 func GetNewCookie(email string) (*http.Cookie, error) {
-	// Set the expiration time for the token
 	expirationTime := time.Now().Add(cookieExpiration)
 
-	// Create a new JWT claims
 	claims := &Claims{
 		Email: email,
 		StandardClaims: jwt.StandardClaims{
@@ -36,7 +28,6 @@ func GetNewCookie(email string) (*http.Cookie, error) {
 		},
 	}
 
-	// Create the JWT string
 	token, err := newJWTFromClaims(claims)
 	if err != nil {
 		return nil, errors.New("error creating JWT string")
@@ -50,13 +41,11 @@ func GetNewCookie(email string) (*http.Cookie, error) {
 }
 
 func GetRefreshedCookie(claims *Claims) (*http.Cookie, error) {
-	// Set the expiration time for the token
 	expirationTime := time.Now().Add(cookieExpiration)
 
 	// Refresh expiration time
 	claims.ExpiresAt = expirationTime.Unix()
 
-	// Create the JWT string
 	token, err := newJWTFromClaims(claims)
 	if err != nil {
 		return nil, errors.New("error creating JWT string")
@@ -90,7 +79,7 @@ func ValidateRequest(r *http.Request) (*Claims, error) {
 		return jwtKey, nil
 	}
 
-	// Parse the JWT string and store the result in `claims`.
+	// Parse the JWT string and store the result in claims
 	token, err := jwt.ParseWithClaims(tokenString, claims, keyFunc)
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {

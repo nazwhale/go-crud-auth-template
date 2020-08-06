@@ -26,7 +26,6 @@ RETURNING id`
 		user.HashedPassword,
 		t,
 	).Scan(&id); err != nil {
-		// If there is any issue with inserting into the database, return a 500 error
 		return errors.New(fmt.Sprintf("error writing user to db: %q", err))
 	}
 
@@ -43,7 +42,7 @@ WHERE email=$1`
 	err := result.Scan(&user.Email, &user.HashedPassword)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return User{}, errors.New("no row exists for email")
+			return User{}, errors.New("no user exists with given email")
 		}
 		return User{}, errors.New(fmt.Sprintf("error reading user by email: %q", err))
 	}

@@ -28,7 +28,6 @@ RETURNING id`
 		item.Title,
 		t,
 	).Scan(&id); err != nil {
-		// If there is any issue with inserting into the database, return a 500 error
 		return errors.New(fmt.Sprintf("error writing list item to db: %q", err))
 	}
 

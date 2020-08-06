@@ -12,5 +12,3 @@ CREATE TABLE listitems (
   created_at TIMESTAMP
 );
 
-/* Lifeline example */
-/* https://github.com/nazwhale/lifeline-api/blob/master/db/schema.sql */
