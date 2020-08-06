@@ -27,7 +27,7 @@ RETURNING id`
 		t,
 	).Scan(&id); err != nil {
 		// If there is any issue with inserting into the database, return a 500 error
-		return errors.New(fmt.Sprintf("error writing user to dao: %q", err))
+		return errors.New(fmt.Sprintf("error writing user to db: %q", err))
 	}
 
 	return nil

@@ -65,6 +65,9 @@ func setupRoutes(handler *handler.Handler) {
 	http.HandleFunc("/refresh", handleError(handler.RefreshToken))
 
 	http.HandleFunc("/welcome", handleError(withAuth(handler.Welcome)))
+
+	http.HandleFunc("/create-list-item", handleError(withAuth(handler.CreateListItem)))
+	http.HandleFunc("/list-items-for-user", handleError(withAuth(handler.ReadListItemsForUser)))
 }
 
 type H func(http.ResponseWriter, *http.Request) *handler.Error

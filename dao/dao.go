@@ -9,6 +9,9 @@ import (
 type DAO interface {
 	SaveUser(User) error
 	ReadUserByEmail(string) (User, error)
+
+	SaveListItem(ListItem) error
+	ReadListItemsForUser(int) ([]ListItem, error)
 }
 
 type dao struct {
