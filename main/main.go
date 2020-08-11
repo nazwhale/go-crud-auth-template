@@ -27,10 +27,22 @@ func main() {
 	log.Fatal(http.ListenAndServe(getPort(), nil))
 }
 
-// --- db connection ---
+func setupRoutes(handler *handler.Handler) {
+	http.HandleFunc("/signup", handleError(handler.SignUp))
+	http.HandleFunc("/login", handleError(handler.Login))
+	http.HandleFunc("/refresh", handleError(handler.RefreshToken))
+
+	http.HandleFunc("/welcome", handleError(withAuth(handler.Welcome)))
+
+	http.HandleFunc("/create-list-item", handleError(withAuth(handler.CreateListItem)))
+	http.HandleFunc("/list-items-for-user", handleError(withAuth(handler.ReadListItemsForUser)))
+}
 
 func getConnectionInfo() string {
 	env := os.Getenv("APP_ENV")
+	if env == "" {
+		env = "undefined"
+	}
 	fmt.Println("🌍 env:", env)
 
 	switch env {
@@ -62,18 +74,8 @@ func getPort() string {
 	return ":" + port
 }
 
-// --- routes & middleware ---
-
-func setupRoutes(handler *handler.Handler) {
-	http.HandleFunc("/signup", handleError(handler.SignUp))
-	http.HandleFunc("/login", handleError(handler.Login))
-	http.HandleFunc("/refresh", handleError(handler.RefreshToken))
-
-	http.HandleFunc("/welcome", handleError(withAuth(handler.Welcome)))
-
-	http.HandleFunc("/create-list-item", handleError(withAuth(handler.CreateListItem)))
-	http.HandleFunc("/list-items-for-user", handleError(withAuth(handler.ReadListItemsForUser)))
-}
+// --- middleware ---
+// TODO: best pattern for moving to another file? middleware package?
 
 type H func(http.ResponseWriter, *http.Request) *handler.Error
 type httpFunc func(http.ResponseWriter, *http.Request)

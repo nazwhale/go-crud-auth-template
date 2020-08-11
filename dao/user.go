@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+var ErrNoUserExists = errors.New("no user exists with email")
+
 type User struct {
 	Email          string
 	HashedPassword string
@@ -42,7 +44,7 @@ WHERE email=$1`
 	err := result.Scan(&user.Email, &user.HashedPassword)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return User{}, errors.New("no user exists with given email")
+			return User{}, ErrNoUserExists
 		}
 		return User{}, errors.New(fmt.Sprintf("error reading user by email: %q", err))
 	}
