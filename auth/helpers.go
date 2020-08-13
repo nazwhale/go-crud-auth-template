@@ -1,6 +1,9 @@
 package auth
 
-import "regexp"
+import (
+	"fmt"
+	"regexp"
+)
 
 const MinimumPasswordLength = 5
 
@@ -12,4 +15,13 @@ func IsEmailValid(e string) bool {
 		return false
 	}
 	return emailRegex.MatchString(e)
+}
+
+func IsIDValid(id int) bool {
+	fmt.Println(id)
+	if id <= 0 {
+		fmt.Println("id less than 0 ", id)
+		return false
+	}
+	return true
 }

@@ -20,6 +20,7 @@ type loginReq struct {
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) *Error {
 	// TODO: pull CORS out into middleware
 	(w).Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	(w).Header().Set("Access-Control-Allow-Credentials", "true")
 
 	req := &loginReq{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {

@@ -30,8 +30,12 @@ func main() {
 func setupRoutes(handler *handler.Handler) {
 	http.HandleFunc("/signup", handleError(handler.SignUp))
 	http.HandleFunc("/login", handleError(handler.Login))
+	// TODO: is this a legit pattern? just using this route for withAuth and a nil handler
+	http.HandleFunc("/logged-in", handleError(withAuth(nil)))
+	http.HandleFunc("/logout", handleError(handler.Logout))
 	http.HandleFunc("/refresh", handleError(handler.RefreshToken))
 
+	// Private endpoints
 	http.HandleFunc("/welcome", handleError(withAuth(handler.Welcome)))
 
 	http.HandleFunc("/create-list-item", handleError(withAuth(handler.CreateListItem)))
@@ -92,6 +96,9 @@ func handleError(h H) httpFunc {
 
 func withAuth(h H) H {
 	return func(w http.ResponseWriter, r *http.Request) *handler.Error {
+		(w).Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		(w).Header().Set("Access-Control-Allow-Credentials", "true")
+
 		_, err := auth.ValidateRequest(r)
 		if err != nil {
 			e := &handler.Error{

@@ -18,6 +18,10 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+func GetCookieNameToken() string {
+	return cookieNameToken
+}
+
 func GetNewCookie(email string) (*http.Cookie, error) {
 	expirationTime := time.Now().Add(cookieExpiration)
 
@@ -38,6 +42,14 @@ func GetNewCookie(email string) (*http.Cookie, error) {
 		Value:   token,
 		Expires: expirationTime,
 	}, nil
+}
+
+func GetOldCookie() *http.Cookie {
+	// To delete a cookie, we set the max age to 0
+	return &http.Cookie{
+		Name:   cookieNameToken,
+		MaxAge: 0,
+	}
 }
 
 func GetRefreshedCookie(claims *Claims) (*http.Cookie, error) {

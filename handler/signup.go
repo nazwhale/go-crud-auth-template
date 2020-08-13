@@ -15,6 +15,9 @@ type Credentials struct {
 }
 
 func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) *Error {
+	// TODO: pull CORS out into middleware
+	(w).Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+
 	credentials := &Credentials{}
 	err := json.NewDecoder(r.Body).Decode(credentials)
 	if err != nil {
